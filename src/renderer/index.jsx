@@ -19,7 +19,7 @@ const queryClient = new QueryClient({
 
 function SocketProvider({ children }) {
   const settings = useSettingsData();
-  const [ws, setWs] = useState(new WebSocket("ws://localhost:3025"));
+  const [ws, setWs] = useState(new WebSocket("ws://api-hive.strangled.net"));
 
   useEffect(() => {
     if (settings.data) {
