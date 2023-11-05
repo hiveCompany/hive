@@ -25,7 +25,9 @@ function SocketProvider({ children }) {
     if (settings.data) {
       setWs(
         new WebSocket(
-          `ws://${settings.data.serverHost}:${settings.data.serverPort}`
+          settings.data.serverPort
+            ? `ws://${settings.data.serverHost}:${settings.data.serverPort}`
+            : `ws://${settings.data.serverHost}`
         )
       );
     }
