@@ -93,7 +93,7 @@ guests.create = async function (request_body) {
     let first_name = check_list.indexOf(2) === -1 ? null : guest[2];
     let last_name = check_list.indexOf(3) === -1 ? null : guest[3];
     const guest_group = check_list.indexOf(5) === -1 ? null : guest[5];
-    const seat_number = check_list.indexOf(5) === -1 ? null : guest[5];
+    const seat_number = check_list.indexOf(4) === -1 ? null : guest[4];
     // const requests_1 = guest[6] !== null ? guest[0] : 0;
     // const requests_2 = guest[7] !== null ? guest[0] : 0;
     // const requests_3 = guest[8] !== null ? guest[0] : 0;
