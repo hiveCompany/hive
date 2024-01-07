@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-shadow */
+// /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable no-console */
 import express from "express";
 import bodyParser from "body-parser";
-import session from "express-session";
-import expressMysqlSession from "express-mysql-session";
+// import session from "express-session";
+// import expressMysqlSession from "express-mysql-session";
 import path from "path";
 import { fileURLToPath } from "url";
 import projects from "./routs/api/projects.js";
