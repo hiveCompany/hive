@@ -1,8 +1,5 @@
 /* eslint-disable react/jsx-no-bind */
-/* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable consistent-return */
-/* eslint-disable import/no-cycle */
-/* eslint-disable jsx-a11y/mouse-events-have-key-events */
 /* eslint-disable camelcase */
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
@@ -18,6 +15,8 @@ import AddProjectPop from "../add_project_pop";
 import { useHive } from "../../app_hooks";
 import ImportProjectPopUp from "../importProject";
 import DropDown from "../dropDown/dropDown";
+import UserCreatePopUp from "../userCreatePopUp";
+import UserLoginPopUp from "../userLoginPopUp";
 
 function ProjectsDrop({ open }) {
   const projectsData = api.projects.useData();
@@ -130,11 +129,28 @@ function TitleBar() {
   const [projects, setProjects] = useState(false);
   const [settings, setSettings] = useState(false);
   const { map_name, project_name } = useParams();
+  const hive = useHive();
+  const user = api.users.useData();
 
   return (
     <div className="title-bar">
       {/* <WindowControls /> */}
       <div className="app-icon" />
+      <div
+        className="options"
+        draggable="false"
+        onClick={() => hive.openPopUp("UserLogin")}
+        style={{
+          color: "black",
+          backgroundColor: "burlywood",
+          paddingLeft: "10px",
+          paddingRight: "10px",
+        }}
+      >
+        {`${user.data ? user.data : "user"}`}
+        <UserCreatePopUp />
+        <UserLoginPopUp />
+      </div>
       <div className="options" draggable="false">
         <div className="option">
           <div className="option-title"> חלון </div>

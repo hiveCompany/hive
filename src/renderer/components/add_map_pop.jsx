@@ -1,7 +1,5 @@
 /* eslint-disable react/jsx-no-bind */
-/* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/prop-types */
-/* eslint-disable import/no-cycle */
 /* eslint-disable camelcase */
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";

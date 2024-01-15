@@ -39,7 +39,7 @@ async function getGuestGroupScoreByIdNumber(id_number) {
   return group[0].score;
 }
 
-function progressHandler(socketId, data) {
+async function progressHandler(socketId, data, callback) {
   const total_iterations = data.length + 1;
   let completed_iterations = 0;
   let progress = 0;
@@ -49,13 +49,17 @@ function progressHandler(socketId, data) {
   const progressInterval = setInterval(() => {
     update_progress();
   }, 500);
-  return {
-    total_iterations,
-    completed_iterations,
-    progressInterval,
-    progress,
-    update_progress,
-  };
+  for (let i = 0; i < total_iterations; i++) {
+    completed_iterations++;
+    progress = (completed_iterations / total_iterations) * 100;
+    progress = Math.round(progress);
+    await callback(data, i);
+  }
+  completed_iterations++;
+  progress = (completed_iterations / total_iterations) * 100;
+  progress = Math.round(progress);
+  clearInterval(progressInterval);
+  update_progress();
 }
 
 async function processParameters(request_body) {
@@ -70,21 +74,131 @@ async function processParameters(request_body) {
   return { socketId, dabuls, check_list, data, project_id };
 }
 
+// guests.create = async function (request_body) {
+//   const { socketId, dabuls, check_list, data, project_id } =
+//     await processParameters(request_body);
+
+//   let {
+//     total_iterations,
+//     completed_iterations,
+//     progressInterval,
+//     progress,
+//     update_progress,
+//   } = progressHandler(socketId, data);
+
+//   for (const guest of data) {
+//     for (let i = 0; i < 11; i++) {
+//       guest[i] = guest[i] ? guest[i] : null;
+//     }
+
+//     let query_string = "";
+//     const id_number = check_list.indexOf(0) === -1 ? null : guest[0];
+//     let active = check_list.indexOf(1) === -1 ? null : guest[1];
+//     let first_name = check_list.indexOf(2) === -1 ? null : guest[2];
+//     let last_name = check_list.indexOf(3) === -1 ? null : guest[3];
+//     const guest_group = check_list.indexOf(5) === -1 ? null : guest[5];
+//     const seat_number = check_list.indexOf(4) === -1 ? null : guest[4];
+//     // const requests_1 = guest[6] !== null ? guest[0] : 0;
+//     // const requests_2 = guest[7] !== null ? guest[0] : 0;
+//     // const requests_3 = guest[8] !== null ? guest[0] : 0;
+//     let amount = check_list.indexOf(9) === -1 ? null : guest[9];
+//     const notes = check_list.indexOf(10) === -1 ? null : guest[10];
+//     amount = amount || 0;
+//     active = active || 0;
+//     first_name = first_name || "";
+//     last_name = last_name || "";
+//     // const phone = guest[11] !== null ? guest[0] : '';
+//     completed_iterations++;
+//     progress = (completed_iterations / total_iterations) * 100;
+//     progress = Math.round(progress);
+//     if (!first_name || !last_name || !guest_group) continue;
+//     const guest_group_id = guest_group
+//       ? await get_group_id(project_id, guest_group)
+//       : null;
+//     const s_query_string = `SELECT * FROM guests WHERE first_name='${first_name}' AND last_name='${last_name}' AND guest_group='${guest_group}' AND project='${project_id}'`;
+//     if ((await check_not_exists_f(s_query_string)) || dabuls) {
+//       const guestId = uuidv4();
+//       query_string += `INSERT INTO guests(id, id_number, active, first_name, last_name, guest_group, number_of_seats, notes, project) VALUES('${guestId}', ${id_number}, '${active}', '${first_name}', '${last_name}', '${guest_group_id}', ${amount}, ${notes}, '${project_id}');`;
+//       const seat = await db_get(
+//         `SELECT * FROM seats WHERE project='${project_id}' AND seat_number='${seat_number}'`
+//       );
+//       if (seat[0]) {
+//         const seatId = seat[0].id;
+//         let query_string_2 = "";
+//         query_string_2 += `DELETE FROM belong WHERE guest='${guestId}';`;
+//         query_string_2 += `DELETE FROM belong WHERE seat='${seatId}';`;
+//         query_string_2 += `INSERT INTO belong(id, guest, seat, project) VALUES(UUID(), '${guestId}', '${seatId}', '${project_id}');`;
+//         await db_post(query_string_2);
+//       }
+//     } else {
+//       continue;
+//     }
+//     // if (await check_not_exists_f(s_query_string)) {
+//     //   if (
+//     //     request_body.importSeatNumber !== 'undefined' &&
+//     //     request_body.importIdNumber === 'undefined'
+//     //   ) {
+//     //     const guestId = uuidv4();
+//     //     query_string += `INSERT INTO guests(id, first_name, last_name, guest_group, project) VALUES('${guestId}', '${first_name}', '${last_name}', '${guest_group_id}', '${project_id}');`;
+//     //     const seat = await db_get(
+//     //       `SELECT * FROM seats WHERE project='${project_id}' AND seat_number='${seat_number}'`
+//     //     );
+//     //     if (seat[0]) {
+//     //       const seatId = seat[0].id;
+//     //       let query_string_2 = '';
+//     //       query_string_2 += `DELETE FROM belong WHERE guest='${guestId}';`;
+//     //       query_string_2 += `DELETE FROM belong WHERE seat='${seatId}';`;
+//     //       query_string_2 += `INSERT INTO belong(id, guest, seat, project) VALUES(UUID(), '${guestId}', '${seatId}', '${project_id}');`;
+//     //       await db_post(query_string_2);
+//     //     }
+//     //   }
+//     //   if (
+//     //     request_body.importIdNumber !== 'undefined' &&
+//     //     request_body.importSeatNumber === 'undefined'
+//     //   ) {
+//     //     query_string += `INSERT INTO guests(id, id_number, first_name, last_name, guest_group, project) VALUES(UUID(), '${id_number}', '${first_name}', '${last_name}', '${guest_group_id}', '${project_id}');`;
+//     //   }
+//     //   if (
+//     //     request_body.importSeatNumber !== 'undefined' &&
+//     //     request_body.importIdNumber !== 'undefined'
+//     //   ) {
+//     //     const guestId = uuidv4();
+//     //     query_string += `INSERT INTO guests(id, id_number, first_name, last_name, guest_group, project) VALUES('${guestId}', '${id_number}', '${first_name}', '${last_name}', '${guest_group_id}', '${project_id}');`;
+//     //     const seat = await db_get(
+//     //       `SELECT * FROM seats WHERE project='${project_id}' AND seat_number='${seat_number}'`
+//     //     );
+//     //     if (seat[0]) {
+//     //       const seatId = seat[0].id;
+//     //       let query_string_2 = '';
+//     //       query_string_2 += `DELETE FROM belong WHERE guest='${guestId}';`;
+//     //       query_string_2 += `DELETE FROM belong WHERE seat='${seatId}';`;
+//     //       query_string_2 += `INSERT INTO belong(id, guest, seat, project) VALUES(UUID(), '${guestId}', '${seatId}', '${project_id}');`;
+//     //       await db_post(query_string_2);
+//     //     }
+//     //   }
+//     //   if (
+//     //     request_body.importSeatNumber === 'undefined' &&
+//     //     request_body.importIdNumber === 'undefined'
+//     //   ) {
+//     //     query_string += `INSERT INTO guests(id, first_name, last_name, guest_group, project) VALUES(UUID(), '${first_name}', '${last_name}', '${guest_group_id}', '${project_id}');`;
+//     //   }
+//     // }
+//     await db_post(query_string);
+//   }
+//   completed_iterations++;
+//   progress = (completed_iterations / total_iterations) * 100;
+//   clearInterval(progressInterval);
+//   update_progress();
+// };
 guests.create = async function (request_body) {
   const { socketId, dabuls, check_list, data, project_id } =
     await processParameters(request_body);
 
-  let {
-    total_iterations,
-    completed_iterations,
-    progressInterval,
-    progress,
-    update_progress,
-  } = progressHandler(socketId, data);
-
-  for (const guest of data) {
-    for (let i = 0; i < 11; i++) {
-      guest[i] = guest[i] ? guest[i] : null;
+  await progressHandler(socketId, data, async (data, i) => {
+    const guest = data[i];
+    if (!guest) return;
+    for (let i2 = 0; i2 < 11; i2++) {
+      guest[i2] = guest[i2] ? guest[i2] : null;
     }
 
     let query_string = "";
@@ -104,10 +218,7 @@ guests.create = async function (request_body) {
     first_name = first_name || "";
     last_name = last_name || "";
     // const phone = guest[11] !== null ? guest[0] : '';
-    completed_iterations++;
-    progress = (completed_iterations / total_iterations) * 100;
-    progress = Math.round(progress);
-    if (!first_name || !last_name || !guest_group) continue;
+    if (!first_name || !last_name || !guest_group) return;
     const guest_group_id = guest_group
       ? await get_group_id(project_id, guest_group)
       : null;
@@ -127,64 +238,11 @@ guests.create = async function (request_body) {
         await db_post(query_string_2);
       }
     } else {
-      continue;
+      return;
     }
-    // if (await check_not_exists_f(s_query_string)) {
-    //   if (
-    //     request_body.importSeatNumber !== 'undefined' &&
-    //     request_body.importIdNumber === 'undefined'
-    //   ) {
-    //     const guestId = uuidv4();
-    //     query_string += `INSERT INTO guests(id, first_name, last_name, guest_group, project) VALUES('${guestId}', '${first_name}', '${last_name}', '${guest_group_id}', '${project_id}');`;
-    //     const seat = await db_get(
-    //       `SELECT * FROM seats WHERE project='${project_id}' AND seat_number='${seat_number}'`
-    //     );
-    //     if (seat[0]) {
-    //       const seatId = seat[0].id;
-    //       let query_string_2 = '';
-    //       query_string_2 += `DELETE FROM belong WHERE guest='${guestId}';`;
-    //       query_string_2 += `DELETE FROM belong WHERE seat='${seatId}';`;
-    //       query_string_2 += `INSERT INTO belong(id, guest, seat, project) VALUES(UUID(), '${guestId}', '${seatId}', '${project_id}');`;
-    //       await db_post(query_string_2);
-    //     }
-    //   }
-    //   if (
-    //     request_body.importIdNumber !== 'undefined' &&
-    //     request_body.importSeatNumber === 'undefined'
-    //   ) {
-    //     query_string += `INSERT INTO guests(id, id_number, first_name, last_name, guest_group, project) VALUES(UUID(), '${id_number}', '${first_name}', '${last_name}', '${guest_group_id}', '${project_id}');`;
-    //   }
-    //   if (
-    //     request_body.importSeatNumber !== 'undefined' &&
-    //     request_body.importIdNumber !== 'undefined'
-    //   ) {
-    //     const guestId = uuidv4();
-    //     query_string += `INSERT INTO guests(id, id_number, first_name, last_name, guest_group, project) VALUES('${guestId}', '${id_number}', '${first_name}', '${last_name}', '${guest_group_id}', '${project_id}');`;
-    //     const seat = await db_get(
-    //       `SELECT * FROM seats WHERE project='${project_id}' AND seat_number='${seat_number}'`
-    //     );
-    //     if (seat[0]) {
-    //       const seatId = seat[0].id;
-    //       let query_string_2 = '';
-    //       query_string_2 += `DELETE FROM belong WHERE guest='${guestId}';`;
-    //       query_string_2 += `DELETE FROM belong WHERE seat='${seatId}';`;
-    //       query_string_2 += `INSERT INTO belong(id, guest, seat, project) VALUES(UUID(), '${guestId}', '${seatId}', '${project_id}');`;
-    //       await db_post(query_string_2);
-    //     }
-    //   }
-    //   if (
-    //     request_body.importSeatNumber === 'undefined' &&
-    //     request_body.importIdNumber === 'undefined'
-    //   ) {
-    //     query_string += `INSERT INTO guests(id, first_name, last_name, guest_group, project) VALUES(UUID(), '${first_name}', '${last_name}', '${guest_group_id}', '${project_id}');`;
-    //   }
-    // }
+
     await db_post(query_string);
-  }
-  completed_iterations++;
-  progress = (completed_iterations / total_iterations) * 100;
-  clearInterval(progressInterval);
-  update_progress();
+  });
 };
 guests.get_all = async function (request_body) {
   check_parameters(["project_name"], request_body);

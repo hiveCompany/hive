@@ -1,5 +1,4 @@
 /* eslint-disable camelcase */
-/* eslint-disable import/no-cycle */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useEffect, useState } from "react";
 // import { useDownloadExcel } from 'react-export-table-to-excel';
@@ -71,16 +70,14 @@ function GuestsSideMenu() {
 
   if (groups.data) {
     const groups_array = Object.entries(groups.data);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    groupsOptions = groups_array.map(([key, group]) => {
+    groupsOptions = groups_array.map(([, group]) => {
       return group.name;
     });
     groupsOptions.push("הכל");
   }
   if (tags.data) {
     const tags_array = Object.entries(tags.data);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    tagsOptions = tags_array.map(([key, tag]) => {
+    tagsOptions = tags_array.map(([, tag]) => {
       return { name: tag.name, value: tag.id };
     });
     tagsOptions.push("הכל");

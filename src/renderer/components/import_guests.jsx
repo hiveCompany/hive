@@ -1,9 +1,7 @@
 /* eslint-disable react/jsx-no-bind */
-/* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/prop-types */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable camelcase */
-/* eslint-disable import/no-cycle */
 import { useState } from "react";
 import readXlsxFile from "read-excel-file";
 import api from "../api/api";
@@ -41,8 +39,7 @@ function ImportGuests(props) {
   const [check, setCheck] = useState([]);
   const [importSeatNumber] = useState();
   const [importIdNumber] = useState();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [dabuls, setDabuls] = useState(false);
+  const [dabuls] = useState(false);
   const create_guests = api.guests.useCreate();
   const [showGroupsSelect, setShowGroupsSelect] = useState(true);
 
