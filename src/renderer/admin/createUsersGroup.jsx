@@ -1,7 +1,47 @@
+/* eslint-disable react/prop-types */
 import api from "../api/api";
+
+function ActionBox({ categoryName, actionName, fildName }) {
+  function renderFild() {
+    if (fildName) return <li> {`שדה: ${fildName}`}</li>;
+  }
+  return (
+    <div
+      style={{
+        backgroundColor: "blueviolet",
+        margin: "10px",
+        padding: "15px",
+        borderRadius: "20px",
+        fontSize: "15px",
+      }}
+    >
+      <ul>
+        <li> {`קטגוריה: ${categoryName}`}</li>
+        <li> {`פעולה: ${actionName}`}</li>
+        {renderFild()}
+      </ul>
+    </div>
+  );
+}
 
 function CreatrUsersGroup() {
   const actions = api.actions.useData();
+
+  function renderActions() {
+    if (actions.data) {
+      return actions.data.map((action) => {
+        const { categoryName, actionName, fildName } = action;
+        return (
+          <ActionBox
+            key={`${categoryName}_${actionName}_${fildName}`}
+            categoryName={categoryName}
+            actionName={actionName}
+            fildName={fildName}
+          />
+        );
+      });
+    }
+  }
   if (actions.isLoading)
     return (
       <div
@@ -38,8 +78,17 @@ function CreatrUsersGroup() {
   if (actions.isSuccess)
     return (
       <div
-        style={{ margin: "100px", backgroundColor: "greenyellow" }}
-      >{`${actions.data}`}</div>
+        dir="rtl"
+        style={{
+          margin: "100px",
+          backgroundColor: "greenyellow",
+          padding: "15px",
+          display: "flex",
+          flexWrap: "wrap",
+        }}
+      >
+        {renderActions()}
+      </div>
     );
 }
 

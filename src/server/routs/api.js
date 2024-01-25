@@ -31,10 +31,12 @@ const actions = {
   requests_belongs,
   users,
   projectActions,
+  hive_actions: {
+    get_all: getAllActions,
+  },
 };
 
 function getAllActions() {
-  console.log(`a is: ${typeof actions}`);
   let actionsNames = [];
   Object.entries(actions).forEach(([key, value]) => {
     const categoryName = `${key}`;
@@ -48,12 +50,10 @@ function getAllActions() {
       } else {
         fildName = "";
       }
-      actionsNames.push(`${categoryName}_${actionName}${fildName}`);
+      actionsNames.push({ categoryName, actionName, fildName });
     });
-    // console.log(`key is: ${key}, value is: ${value}`);
-    // console.log("++++++++++++++++++++++++++++++++++");
   });
-  console.log(actionsNames);
+  return actionsNames;
 }
 
 router.post("/", async (req, res) => {
