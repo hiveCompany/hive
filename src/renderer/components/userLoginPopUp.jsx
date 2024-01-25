@@ -1,16 +1,20 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import PopUp from "../hive_elements/pop_up";
 import HiveButton from "../hive_elements/hive_button";
 import api from "../api/api";
+import { useHive } from "../app_hooks";
 
 function UserLoginPopUp() {
+  const popUpId = "userLogin";
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
 
   const loginUser = api.users.useLogin();
+  const hive = useHive();
 
   return (
-    <PopUp id="UserLogin" title="צור משתמש">
+    <PopUp id={popUpId} title="כניסה למערכת">
       <form>
         <label htmlFor="map_name"> שם המשתמש </label>
         <br />
@@ -29,12 +33,13 @@ function UserLoginPopUp() {
         />
         <br />
         <HiveButton
-          onClick={() => {
-            loginUser({ user_name: name, password });
+          onClick={async () => {
+            await loginUser({ user_name: name, password });
+            hive.closePopUp(popUpId);
           }}
         >
           {" "}
-          צור{" "}
+          הכנס{" "}
         </HiveButton>
       </form>
     </PopUp>

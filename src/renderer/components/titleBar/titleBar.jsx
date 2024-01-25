@@ -3,7 +3,7 @@
 /* eslint-disable camelcase */
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useQueryClient } from "react-query";
 import api from "../../api/api";
 import PopUp from "../../hive_elements/pop_up";
@@ -136,22 +136,28 @@ function TitleBar() {
     <div className="title-bar">
       {/* <WindowControls /> */}
       <div className="app-icon" />
-      <div
-        className="options"
-        draggable="false"
-        onClick={() => hive.openPopUp("UserLogin")}
-        style={{
-          color: "black",
-          backgroundColor: "burlywood",
-          paddingLeft: "10px",
-          paddingRight: "10px",
-        }}
-      >
-        {`${user.data ? user.data : "user"}`}
-        <UserCreatePopUp />
-        <UserLoginPopUp />
-      </div>
       <div className="options" draggable="false">
+        <div className="option">
+          <Link to={"/"} className="option-title">
+            {"בית"}
+          </Link>
+        </div>
+        <div className="option">
+          <div
+            className="option-title"
+            onClick={() => hive.openPopUp("userLogin")}
+          >
+            {" "}
+            {`${user.data ? user.data : "user"}`}
+          </div>
+          <UserCreatePopUp />
+          <UserLoginPopUp />
+        </div>
+        <div className="option">
+          <Link to={"/admin"} className="option-title">
+            {"ניהול"}
+          </Link>
+        </div>
         <div className="option">
           <div className="option-title"> חלון </div>
         </div>

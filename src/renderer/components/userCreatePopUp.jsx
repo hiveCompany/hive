@@ -12,19 +12,19 @@ function UserCreatePopUp() {
   return (
     <PopUp id="UserCreate" title="צור משתמש">
       <form>
-        <label htmlFor="map_name"> שם המשתמש </label>
+        <label htmlFor="user_name"> שם המשתמש </label>
         <br />
         <input
           type="text"
-          name="map_name"
+          name="user_name"
           onInput={(e) => setName(e.target.value)}
         />
         <br />
-        <label htmlFor="map_name"> סיסמה </label>
+        <label htmlFor="password"> סיסמה </label>
         <br />
         <input
           type="text"
-          name="map_name"
+          name="password"
           onInput={(e) => setPassword(e.target.value)}
         />
         <br />

@@ -1,7 +1,7 @@
-import '../style/pop_up.css';
-import ReactDOM from 'react-dom';
-import { useEffect } from 'react';
-import { useHive } from '../app_hooks';
+import "../style/pop_up.css";
+import ReactDOM from "react-dom";
+import { useEffect } from "react";
+import { useHive } from "../app_hooks";
 
 function PopUp(props) {
   const Hive = useHive();
@@ -12,12 +12,12 @@ function PopUp(props) {
   }
 
   function onkeydown(event) {
-    if (event.code == 'Escape') closePopUp();
+    if (event.code == "Escape") closePopUp();
   }
 
   useEffect(() => {
-    document.addEventListener('keydown', onkeydown);
-    return () => document.removeEventListener('keydown', onkeydown);
+    document.addEventListener("keydown", onkeydown);
+    return () => document.removeEventListener("keydown", onkeydown);
   }, []);
   if (props.status || Hive.pop_ups[props.id])
     return ReactDOM.createPortal(
@@ -26,15 +26,15 @@ function PopUp(props) {
         <div className="pop_up">
           <div className="pop_up_head">
             <div className="X_button" onClick={closePopUp}>
-              {' '}
-              X{' '}
+              {" "}
+              X{" "}
             </div>
             <span className="title">{props.title}</span>
           </div>
           <div className="pop_up_body">{props.children}</div>
         </div>
       </>,
-      document.getElementById('pop_ups')
+      document.getElementById("pop_ups")
     );
   return null;
 }
