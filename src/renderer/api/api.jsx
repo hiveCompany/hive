@@ -10,6 +10,8 @@ import seats from "./seats";
 import tagBelongs from "./tag_belongs";
 import tags from "./tags";
 import users from "./users";
+import actions from "./actions";
+import userGroups from "./users_groups";
 
 const api = {
   seatsGroups,
@@ -24,6 +26,8 @@ const api = {
   tagBelongs,
   tags,
   users,
+  userGroups,
+  actions,
 };
 
 export default api;

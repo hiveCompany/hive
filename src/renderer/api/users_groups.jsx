@@ -1,10 +1,18 @@
 /* eslint-disable camelcase */
-import { useMutation, useQuery } from 'react-query';
-import newApi from '../new_api/new_api';
-import { useSocket } from '../app_hooks';
+import { useMutation, useQuery } from "react-query";
+import newApi from "../new_api/new_api";
+import { useSocket } from "../app_hooks";
+import useHiveFetch from "./useHiveFetch";
 
 function useDataAll() {
-  return useQuery(['all_user_groups'], newApi.user_groups.get_all);
+  const hiveFetch = useHiveFetch();
+  return useQuery(["all_user_groups"], async () => {
+    const body = {
+      category: "user_groups",
+      action: "get_all",
+    };
+    return hiveFetch(body);
+  });
 }
 function useCreate() {
   const hiveSocket = useSocket();
@@ -16,8 +24,8 @@ function useCreate() {
     {
       onSuccess: () => {
         const msg = JSON.stringify({
-          action: 'invalidate',
-          query_key: ['all_user_groups'],
+          action: "invalidate",
+          query_key: ["all_user_groups"],
         });
         hiveSocket.send(msg);
       },
@@ -35,8 +43,8 @@ function useAddAction() {
     {
       onSuccess: () => {
         const msg = JSON.stringify({
-          action: 'invalidate',
-          query_key: ['all_user_groups'],
+          action: "invalidate",
+          query_key: ["all_user_groups"],
         });
         hiveSocket.send(msg);
       },
