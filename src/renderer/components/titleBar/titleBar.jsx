@@ -158,9 +158,6 @@ function TitleBar() {
             {"ניהול"}
           </Link>
         </div>
-        <div className="option">
-          <div className="option-title"> חלון </div>
-        </div>
         <div
           className="option"
           onMouseOver={() => setSettings(true)}

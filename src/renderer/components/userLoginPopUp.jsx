@@ -41,6 +41,10 @@ function UserLoginPopUp() {
           {" "}
           הכנס{" "}
         </HiveButton>
+        <HiveButton onClick={() => hive.openPopUp("UserCreate")}>
+          {" "}
+          הירשם{" "}
+        </HiveButton>
       </form>
     </PopUp>
   );

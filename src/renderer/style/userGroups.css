@@ -1,0 +1,6 @@
+.action_box.selected{
+    background-color: rgb(255, 115, 0);
+}
+.action_box{
+    background-color: blueviolet;
+}
